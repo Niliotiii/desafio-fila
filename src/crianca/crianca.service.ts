@@ -6,6 +6,8 @@ import { Repository } from 'typeorm';
 import { Crianca } from './entities/crianca.entity';
 import { Endereco } from 'src/endereco/entities/endereco.entity';
 import { Contato } from 'src/contato/entities/contato.entity';
+import { EnderecoService } from 'src/endereco/endereco.service';
+import { ContatoService } from 'src/contato/contato.service';
 
 @ApiTags('crianca')
 export class CriancaService {
@@ -13,9 +15,9 @@ export class CriancaService {
     @Inject('CRIANCA_REPOSITORY')
     private criancaRepository: Repository<Crianca>,
     @Inject('ENDERECO_REPOSITORY')
-    private enderecoRepository: Repository<Endereco>,
+    private readonly enderecoService: EnderecoService,
     @Inject('CONTATO_REPOSITORY')
-    private contatoRepository: Repository<Contato>,
+    private readonly contatoService: ContatoService,
   ) {}
 
   @ApiOperation({ summary: 'Cria um novo registro' })
@@ -24,23 +26,19 @@ export class CriancaService {
     description: 'Registro criado com sucesso',
   })
   async create(createCriancaDto: CreateCriancaDto) {
-    console.log(createCriancaDto)
-    const newEndereco = this.enderecoRepository.create(createCriancaDto.endereco_id);
-    await this.enderecoRepository.save(newEndereco);
+
+    console.log(createCriancaDto.endereco_id);
+    const endereco = await this.enderecoService.create(createCriancaDto.endereco_id);
+    const contato = await this.contatoService.create(createCriancaDto.contato_id);
   
-    const newContato = this.contatoRepository.create(createCriancaDto.contato_id);
-    await this.contatoRepository.save(newContato);
-  
-    const newCrianca = this.criancaRepository.create({
+    // delete createCriancaDto.endereco_id;
+    // delete createCriancaDto.contato_id;
+
+    return this.criancaRepository.save({
       ...createCriancaDto,
-      endereco: newEndereco,
-      contato: newContato,
+      contato_id: contato,
+      endereco_id: endereco,
     });
-
-    console.log(newCrianca)
-
-    await this.criancaRepository.save(newCrianca);
-    return newCrianca;
   }
 
   @ApiOperation({ summary: 'Busca todos os registros' })
@@ -69,11 +67,11 @@ export class CriancaService {
   })
   @ApiResponse({ status: 404, description: 'O registro não existe' })
   async update(id: number, updateCriancaDto: UpdateCriancaDto) {
-    // const crianca = await this.criancaRepository.findOne({ where: { id } });
-    // if (!crianca) {
-    //   throw new NotFoundException(`Registro #${id} não existe`);
-    // }
-    // await this.criancaRepository.update(id, updateCriancaDto);
+    const crianca = await this.criancaRepository.findOne({ where: { id } });
+    if (!crianca) {
+      throw new NotFoundException(`Registro #${id} não existe`);
+    }
+    await this.criancaRepository.update(id, updateCriancaDto);
     return this.criancaRepository.findOne({ where: { id } });
   }
 

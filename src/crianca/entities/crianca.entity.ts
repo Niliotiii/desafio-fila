@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { TipoResponsavelEnum } from '../../enums/tipo_responsavel.enum';
 import { Endereco } from 'src/endereco/entities/endereco.entity';
@@ -41,13 +41,10 @@ export class Crianca {
     @ManyToOne(() => Endereco)
     @ApiProperty({ description: 'Id do endereço da criança' })
     @JoinColumn({ name: 'endereco_id', referencedColumnName: 'id' })
-    @Column({ type: 'int' })
     endereco_id:Endereco;
 
-    @ManyToOne(() => Contato)
+    @OneToOne(() => Contato)
     @ApiProperty({ description: 'Id do contato da criança' })
     @JoinColumn({ name: 'contato_id', referencedColumnName: 'id' })
-    @Column({ type: 'int' })
-    contato_id:Endereco;
-  newCrianca: Contato;
+    contato_id:Contato;
 }

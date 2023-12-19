@@ -9,8 +9,6 @@ import { CreateContatoDto } from '../../contato/dto/create-contato.dto';
 import { CreateEnderecoDto } from 'src/endereco/dto/create-endereco.dto';
 
 export class CreateCriancaDto {
-    // @ApiProperty({ description: 'Id da criança' })
-    // id: number;
 
     @ApiProperty({ description: 'Nome da criança' })
     @MinLength(3)

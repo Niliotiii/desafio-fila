@@ -1,0 +1,41 @@
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+
+export class createBnccObjetoConhecimentoHabilidade1660089072912
+  implements MigrationInterface
+{
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.createTable(
+      new Table({
+        name: 'bncc_objeto_conhecimento_habilidade',
+        columns: [
+          {
+            name: 'objeto_conhecimento_id',
+            type: 'integer',
+            isNullable: false,
+          },
+          {
+            name: 'habilidade_id',
+            type: 'integer',
+            isNullable: false,
+          },
+        ],
+        foreignKeys: [
+          {
+            columnNames: ['objeto_conhecimento_id'],
+            referencedColumnNames: ['id'],
+            referencedTableName: 'bncc_objeto_conhecimento',
+          },
+          {
+            columnNames: ['habilidade_id'],
+            referencedColumnNames: ['id'],
+            referencedTableName: 'bncc_habilidade',
+          },
+        ],
+      }),
+    );
+  }
+
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropTable('bncc_objeto_conhecimento_habilidade');
+  }
+}
