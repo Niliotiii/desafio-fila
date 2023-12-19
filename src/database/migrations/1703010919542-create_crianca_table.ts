@@ -50,17 +50,17 @@ export class CreateCriancaTable1703010919542 implements MigrationInterface {
           {
             name: 'contato_id',
             type: 'int',
-            isNullable: false,
+            isNullable: true,
           },
           {
             name: 'endereco_id',
             type: 'int',
-            isNullable: false,
+            isNullable: true,
           },
           {
             name: 'tipo_responsavel_id',
             type: 'int',
-            isNullable: false,
+            isNullable: true,
           },
         ],
         foreignKeys: [
