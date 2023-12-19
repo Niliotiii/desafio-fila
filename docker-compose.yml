@@ -1,0 +1,40 @@
+version: '3.0'
+services:
+  app:
+    image: node:18
+    restart: always
+    container_name: api-fila
+    command: [sh, -c, 'su node -c "npm install" && npm run start:dev']
+    volumes:
+      - ./:/code
+    working_dir: /code
+    env_file:
+      - .env
+    ports:
+      - '${API_PORT}:${API_PORT}'
+    depends_on:
+      - mariadb
+    networks:
+      - fila-net
+
+  mariadb:
+    image: mariadb
+    container_name: db-fila
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db-fila
+    ports:
+      - '${DB_PORT}:3306'
+    volumes:
+      - ./docker/mariadb:/docker-entrypoint-initdb.d
+    networks:
+      - fila-net
+
+volumes:
+  mariadb:
+    driver: local
+
+networks:
+  fila-net:
+    driver: bridge
